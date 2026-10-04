@@ -1307,10 +1307,9 @@ void getletter(inchr c)
   for (pointerChar=cfslt;pointerChar==NULL?0:pointerChar->ord!=c;
   pointerChar=pointerChar->next);
   if (pointerChar==NULL) {
-    while(pointerChar == NULL ? 0 : pointerChar->ord != 0){
-      pointerChar = pointerChar->next;
-      currchar = pointerChar->thechar;
-    }
+    for (pointerChar=cfslt;pointerChar==NULL?0:pointerChar->ord!=0;
+      pointerChar=pointerChar->next);
+    currchar = pointerChar->thechar;
     }
   else {
     currchar = pointerChar->thechar;
@@ -1765,7 +1764,9 @@ inchr iso2022()
   switch (ch) {
     case 14: /* invoke G1 into GL */
       gl = 1;
-      return iso2022();
+      ch = iso2022();
+      if (ch == EOF) gl = 0; /* reset locking shift at end of input */
+      return ch;
     case 15: /* invoke G0 into GL */
       gl = 0;
       return iso2022();
